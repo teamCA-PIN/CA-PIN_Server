@@ -23,6 +23,10 @@ const CafetiSchema = new mongoose_1.default.Schema({
     modifierDetail: {
         type: String,
     },
+    introduction: {
+        type: String,
+        required: true
+    },
     img: {
         type: String,
         required: true

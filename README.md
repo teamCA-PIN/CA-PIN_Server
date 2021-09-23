@@ -41,28 +41,41 @@
 ### Dependencies module (package.json)
 #### <kbd>Dev module:</kbd> 
 ```json
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.2",
-    "@types/express": "^4.17.11",
-    "@types/mongoose": "^5.10.4",
-    "@types/node": "^14.14.37",
-    "nodemon": "^2.0.7",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
-  }
+      "devDependencies": {
+        "@types/bcryptjs": "^2.4.2",
+        "@types/express": "^4.17.11",
+        "@types/mongoose": "^5.10.4",
+        "@types/node": "^14.14.37",
+        "nodemon": "^2.0.7",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.2.3"
+      }
 ```
 
 #### <kbd>module:</kbd>
 ```json
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-validator": "^6.10.0",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.3",
-    "request": "^2.88.2"
-  }
+    "dependencies": {
+        "@types/aws-sdk": "^2.7.0",
+        "@types/http-errors": "^1.8.1",
+        "@types/morgan": "^1.9.3",
+        "@types/multer": "^1.4.7",
+        "@types/winston": "^2.4.4",
+        "axios": "^0.21.1",
+        "bcryptjs": "^2.4.3",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-validator": "^6.10.0",
+        "global": "^4.4.0",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.12.3",
+        "morgan": "^1.10.0",
+        "multer": "^1.4.2",
+        "multer-s3": "^2.9.0",
+        "nodemailer": "^6.6.2",
+        "request": "^2.88.2",
+        "winston": "^3.3.3",
+        "winston-daily-rotate-file": "^4.5.5"
+      }
 ```
 
 <br>
