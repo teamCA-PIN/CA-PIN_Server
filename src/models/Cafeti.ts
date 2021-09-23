@@ -20,6 +20,10 @@ const CafetiSchema = new mongoose.Schema ({
     modifierDetail: {
         type: String,
     },
+    introduction: {
+        type: String,
+        required: true
+    },
     img: {
         type: String,
         required: true

@@ -177,7 +177,7 @@ router.post(
 
 /**
  *  @route Get user/myInfo
- *  @desc fetch my category list(내 카테고리-마이페이지)
+ *  @desc fetch my Info(내 정보 조회)
  *  @access Private
  */
  router.get(
