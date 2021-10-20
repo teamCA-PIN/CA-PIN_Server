@@ -48,7 +48,7 @@ router.get(
 /**
  *  @route GET cafes/:cafeId
  *  @desc get a cafe detail
- *  @access Public
+ *  @access Private
  */
 router.get(
     "/detail/:cafeId", auth,
