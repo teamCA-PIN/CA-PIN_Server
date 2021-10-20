@@ -51,10 +51,10 @@ router.get(
  *  @access Public
  */
 router.get(
-    "/detail/:cafeId",
+    "/detail/:cafeId", auth,
     async(req: Request, res: Response, next) => {
         const cafeId = req.params.cafeId;
-        // const userId = res.locals.userId;
+        const userId = res.locals.userId;
 
         try{
             if (!mongoose.isValidObjectId(cafeId)){
@@ -63,11 +63,11 @@ router.get(
             else{
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
                 if (!cafeDetail) return res.status(statusCode.NO_CONTENT).send();
-                // const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
+                const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
                 // var average: Number = await reviewService.getCafeAverageRating(cafeId);
                 // if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
                 // average = Number(average.toFixed(1))
-                return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail})
+                return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
             }
         } catch (error) {
             return next(error);

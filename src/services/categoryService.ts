@@ -181,7 +181,11 @@ const fetchCafesInCategory = async(categoryId, userId) => {
 }
 
 const checkCafeInCategory = async(cafeId,userId) => {
-    const category = await Category.findOne({cafe: cafeId, user: userId})
+    const category = await Category.findOne().where('user').equals(userId).findOne({
+        'cafes': {
+            $all: cafeId
+        }
+    })
     if (category) return true
     return false
 }
