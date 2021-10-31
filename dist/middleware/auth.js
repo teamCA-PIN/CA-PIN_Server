@@ -23,7 +23,14 @@ exports.default = (req, res, next) => {
         next();
     }
     catch (err) {
-        next(http_errors_1.default(statusCode.UNAUTHORIZED, responseMessage.EXPIRED_TOKEN));
+        switch (err.name) {
+            case 'TokenExpiredError':
+                next(http_errors_1.default(statusCode.UNAUTHORIZED, responseMessage.EXPIRED_TOKEN));
+                break;
+            case 'JsonWebTokenError':
+                next(http_errors_1.default(statusCode.UNAUTHORIZED, responseMessage.INVALID_TOKEN));
+                break;
+        }
     }
 };
 //# sourceMappingURL=auth.js.map

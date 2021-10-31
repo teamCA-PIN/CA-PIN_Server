@@ -47,6 +47,10 @@ const UserSchema = new mongoose_1.default.Schema({
     },
     deleted_at: {
         type: Date,
+    },
+    token_refresh: {
+        type: String,
+        required: true,
     }
 }, {
     collection: "user",
