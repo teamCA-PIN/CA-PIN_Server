@@ -12,6 +12,7 @@ module.exports = {
     // TOKEN
     EXPIRED_TOKEN: '만료된 토큰',
     INVALID_TOKEN: '유효하지 않은 토큰',
+    NO_REGEN_TOKEN: '재로그인 필요',
     SUCCESS_TOKEN: '토큰 발급 성공',
     NO_TOKEN: '토큰이 없습니다',
 

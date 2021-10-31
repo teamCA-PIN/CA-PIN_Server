@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import User from "../models/User";
 import Category from "../models/Category";
 import Review from "../models/Review";
+const auth = require("../middleware/auth");
+const authService = require("../services/authService");
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const categoryService = require("../services/categoryService");
@@ -24,19 +26,10 @@ const loginUser = async(email, password) => {
     if (!isMatch) {
         throw createError(statusCode.BAD_REQUEST,responseMessage.MISS_MATCH_PW);
     }
-    
+
+    user = await authService.generateRefreshToken(user._id);
+
     return user
-};
-
-const generateToken = async(userId) => {
-    // Return jsonwebtoken
-    const token = jwt.sign(
-        { sub: userId }, 
-        config.jwtSecret, 
-        { expiresIn: 864000 });
-
-    // console.log(token)
-    return token
 };
 
 const signupUser = async (nickname, email, password) => {
@@ -188,7 +181,6 @@ const updateUserInfo = async(userId, new_Img, new_nickname) => {
 module.exports = {
     loginUser,
     signupUser,
-    generateToken,
     fetchUserInfo,
     updateUserInfo,
     mailToUser,

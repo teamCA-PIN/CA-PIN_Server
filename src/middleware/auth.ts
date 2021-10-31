@@ -20,6 +20,13 @@ export default (req, res, next) => {
     res.locals.userId = decoded.sub;
     next();
   } catch (err) {
-    next(createError(statusCode.UNAUTHORIZED,responseMessage.EXPIRED_TOKEN));
+    switch (err.name) {
+      case 'TokenExpiredError':
+        next(createError(statusCode.UNAUTHORIZED,responseMessage.EXPIRED_TOKEN));
+        break;
+      case 'JsonWebTokenError':
+        next(createError(statusCode.UNAUTHORIZED,responseMessage.INVALID_TOKEN));
+        break;
+    }
   }
 };
