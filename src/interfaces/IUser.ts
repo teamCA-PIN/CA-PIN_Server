@@ -7,6 +7,7 @@ export interface IUser {
     profileImg?: string;
     created_at?: Date;
     deleted_at?: Date;
+    token_refresh: string;
 }
 
 export interface IUserOutputDTO {

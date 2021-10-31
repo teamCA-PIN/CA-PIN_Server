@@ -44,6 +44,10 @@ const UserSchema = new mongoose.Schema ({
     },
     deleted_at: {
         type: Date,
+    },
+    token_refresh: {
+        type: String,
+        required: true,
     }
 },
 {
