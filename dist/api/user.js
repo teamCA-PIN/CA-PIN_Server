@@ -16,6 +16,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const auth_1 = __importDefault(require("../middleware/auth"));
+const authService = require("../services/authService");
 const router = express_1.default.Router();
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
@@ -40,12 +41,13 @@ router.post("/login", [
     const { email, password } = req.body;
     try {
         const user = yield userService.loginUser(email, password);
-        const userToken = yield userService.generateToken(user._id);
+        const userToken = yield authService.generateToken(user._id);
         return res.status(statusCode.OK).json({
             message: responseMessage.SIGN_IN_SUCCESS,
             loginData: {
                 nickname: user.nickname,
-                token: userToken
+                token_access: userToken,
+                token_refresh: user.token_refresh
             },
         });
     }
@@ -212,6 +214,24 @@ router.put("/myInfo", auth_1.default, upload.single('profileImg'), (req, res, ne
         yield userService.updateUserInfo(userId, url, nickname);
         return res.status(statusCode.OK).json({
             message: responseMessage.UPDATE_USER_SUCCESS,
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route Get user/refresh/:token
+ *  @desc regenerate access token
+ *  @access Private
+ */
+router.post("/refresh", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token_access, token_refresh } = req.body;
+    try {
+        const tokens = yield authService.generateTokenWithRefresh(token_access, token_refresh);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.SUCCESS_TOKEN,
+            tokens
         });
     }
     catch (error) {

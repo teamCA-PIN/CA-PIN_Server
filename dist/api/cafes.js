@@ -55,11 +55,11 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
 /**
  *  @route GET cafes/:cafeId
  *  @desc get a cafe detail
- *  @access Public
+ *  @access Private
  */
-router.get("/detail/:cafeId", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/detail/:cafeId", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const cafeId = req.params.cafeId;
-    // const userId = res.locals.userId;
+    const userId = res.locals.userId;
     try {
         if (!mongoose_1.default.isValidObjectId(cafeId)) {
             return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
@@ -68,11 +68,11 @@ router.get("/detail/:cafeId", (req, res, next) => __awaiter(void 0, void 0, void
             const cafeDetail = yield cafeService.getCafeDetail(cafeId);
             if (!cafeDetail)
                 return res.status(statusCode.NO_CONTENT).send();
-            // const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
+            const isSaved = yield categoryService.checkCafeInCategory(cafeId, userId);
             // var average: Number = await reviewService.getCafeAverageRating(cafeId);
             // if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
             // average = Number(average.toFixed(1))
-            return res.status(statusCode.OK).send({ message: responseMessage.CAFE_DETAIL_SUCCESS, cafeDetail });
+            return res.status(statusCode.OK).send({ message: responseMessage.CAFE_DETAIL_SUCCESS, cafeDetail, isSaved });
         }
     }
     catch (error) {

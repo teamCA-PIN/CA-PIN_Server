@@ -164,7 +164,11 @@ const fetchCafesInCategory = (categoryId, userId) => __awaiter(void 0, void 0, v
     return whatCategory.cafes;
 });
 const checkCafeInCategory = (cafeId, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const category = yield Category_1.default.findOne({ cafe: cafeId, user: userId });
+    const category = yield Category_1.default.findOne().where('user').equals(userId).findOne({
+        'cafes': {
+            $all: cafeId
+        }
+    });
     if (category)
         return true;
     return false;

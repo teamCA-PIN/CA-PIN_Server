@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = __importDefault(require("../config"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../models/User"));
 const Category_1 = __importDefault(require("../models/Category"));
 const Review_1 = __importDefault(require("../models/Review"));
+const auth = require("../middleware/auth");
+const authService = require("../services/authService");
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const categoryService = require("../services/categoryService");
@@ -35,13 +35,8 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
     if (!isMatch) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.MISS_MATCH_PW);
     }
+    user = yield authService.generateRefreshToken(user._id);
     return user;
-});
-const generateToken = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    // Return jsonwebtoken
-    const token = jsonwebtoken_1.default.sign({ sub: userId }, config_1.default.jwtSecret, { expiresIn: 864000 });
-    // console.log(token)
-    return token;
 });
 const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void 0, function* () {
     // email, password, nickname으로 유저 생성
@@ -166,7 +161,6 @@ const updateUserInfo = (userId, new_Img, new_nickname) => __awaiter(void 0, void
 module.exports = {
     loginUser,
     signupUser,
-    generateToken,
     fetchUserInfo,
     updateUserInfo,
     mailToUser,
