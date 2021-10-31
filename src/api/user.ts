@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator"
 import authChecker from "../middleware/auth"
+import { decode } from "querystring";
+const authService = require("../services/authService");
 const router = express.Router();
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
@@ -32,12 +34,14 @@ router.post(
 
         try {
             const user = await userService.loginUser(email, password);
-            const userToken = await userService.generateToken(user._id);
+            const userToken = await authService.generateToken(user._id);
+
             return res.status(statusCode.OK).json({
                 message: responseMessage.SIGN_IN_SUCCESS,
                 loginData: {
                     nickname: user.nickname,
-                    token: userToken
+                    token_access: userToken,
+                    token_refresh: user.token_refresh
                 },
             });
         } catch (error) {
@@ -210,7 +214,8 @@ router.post(
  *  @desc get my review list
  *  @access Private
  */
-router.get("/reviews",
+router.get(
+    "/reviews",
     authChecker,
     async(req: Request, res: Response, next) => {
         const userId = res.locals.userId
@@ -252,6 +257,28 @@ router.get("/reviews",
             await userService.updateUserInfo(userId, url, nickname);
             return res.status(statusCode.OK).json({
                 message: responseMessage.UPDATE_USER_SUCCESS,
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
+
+/**
+ *  @route Get user/refresh/:token
+ *  @desc regenerate access token
+ *  @access Private
+ */
+ router.post(
+    "/refresh",
+    async(req: Request, res: Response, next) => {
+        const { token_access, token_refresh } = req.body;
+        try {
+            const tokens = await authService.generateTokenWithRefresh(token_access, token_refresh);
+
+            return res.status(statusCode.OK).json({
+                message: responseMessage.SUCCESS_TOKEN,
+                tokens
             });
         } catch (error) {
             return next(error);
