@@ -13,12 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Review_1 = __importDefault(require("../models/Review"));
+const Report_1 = __importDefault(require("../models/Report"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 const http_errors_1 = __importDefault(require("http-errors"));
 const koreanDate = require("../modules/dateCalculate");
 const Cafe_1 = __importDefault(require("../models/Cafe"));
+const nodemailer = require('nodemailer');
 const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
     const reviews = yield Review_1.default.find().where("cafe").equals(cafeId).populate("user", ["_id", "nickname", "profileImg", "cafeti"]).sort({ created_at: -1 });
     let reviewDTOList = [];
@@ -165,6 +167,53 @@ const getMyReviews = (userId) => __awaiter(void 0, void 0, void 0, function* () 
     }
     return myReviewsDTO;
 });
+const createReport = (reviewId) => __awaiter(void 0, void 0, void 0, function* () {
+    const report = new Report_1.default({
+        review: reviewId
+    });
+    yield report.save();
+    return report;
+});
+const reportReview = (review) => __awaiter(void 0, void 0, void 0, function* () {
+    var report = yield Report_1.default.findOne({ review: review.id });
+    if (!report) {
+        report = yield createReport(review);
+    }
+    report.count += 1;
+    yield report.save();
+    return report;
+});
+const mailToAdmin = (review, report) => __awaiter(void 0, void 0, void 0, function* () {
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.NODEMAILER_ADMIN,
+            pass: process.env.NODEMAILER_PASS
+        },
+    });
+    yield transporter.sendMail({
+        from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
+        to: process.env.NODEMAILER_ADMIN,
+        subject: '[CA:PIN] 리뷰 신고가 접수되었습니다.',
+        text: "리뷰 신고가 접수되었습니다.",
+        html: `
+        <pre>카페명 : ${review.cafe.name}
+작성자 : ${review.user.nickname}, ${review.user.email}
+작성일자 : ${review.created_at}
+리뷰 내용 : ${review.content}
+누적 신고 횟수 : ${report.count}</pre>`
+    });
+    return;
+});
+const getReviewById = (reviewId) => __awaiter(void 0, void 0, void 0, function* () {
+    const review = yield Review_1.default.findById(reviewId).populate("cafe user");
+    if (!review)
+        return null;
+    return review;
+});
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
@@ -172,6 +221,9 @@ module.exports = {
     modifyReview,
     deleteReview,
     updateCafeAverageRating,
-    getMyReviews
+    getMyReviews,
+    reportReview,
+    mailToAdmin,
+    getReviewById
 };
 //# sourceMappingURL=reviewService.js.map

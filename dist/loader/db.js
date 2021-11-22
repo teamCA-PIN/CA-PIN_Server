@@ -21,6 +21,7 @@ const Cafe_1 = __importDefault(require("../models/Cafe"));
 const Review_1 = __importDefault(require("../models/Review"));
 const Tag_1 = __importDefault(require("../models/Tag"));
 const Menu_1 = __importDefault(require("../models/Menu"));
+const Report_1 = __importDefault(require("../models/Report"));
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(config_1.default.mongoURI, {
@@ -49,6 +50,9 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         Menu_1.default.createCollection().then(function (collection) {
             console.log("Menu Collection is created!");
+        });
+        Report_1.default.createCollection().then(function (collection) {
+            console.log("Report Collections is created!");
         });
     }
     catch (err) {
