@@ -1,11 +1,14 @@
 import Review from "../models/Review";
+import Report from "../models/Report";
 import { IReviewOutputDTO, IWriterDTO, IReviewMyOutputDTO } from "../interfaces/IReview";
+import IReport from "../interfaces/IReport";
 import mongoose from "mongoose";
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 import createError from "http-errors";
 const koreanDate = require("../modules/dateCalculate");
 import Cafe from "../models/Cafe";
+import { report } from "process";
 const getCafeReviewList = async(cafeId) => {
 
     const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]).sort({created_at:-1});
@@ -173,6 +176,37 @@ const getMyReviews = async (userId) => {
     return myReviewsDTO
 }
 
+const createReport: IReport = async (reviewId) => {
+    try {
+        const report = new Report({
+            review: reviewId
+        });
+        await report.save();
+        return report;
+    } catch (error) {
+        console.log(error.message);
+        throw createError(error);
+    }
+}
+const reportReview = async (reviewId) => {
+    try {
+        const review = await Review.findById(reviewId);
+        if (!review) return null;
+        var report = await Report.findOne({review: reviewId});
+        if (!report) {
+            report = await createReport(review);
+        }
+        report.populate("review");
+        report.count += 1;
+        await report.save();
+        return report;
+    } catch (error) {
+        console.log(error.message);
+        throw createError(error);
+    }
+    
+}
+
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
@@ -180,5 +214,6 @@ module.exports = {
     modifyReview,
     deleteReview,
     updateCafeAverageRating,
-    getMyReviews
+    getMyReviews,
+    reportReview
 }

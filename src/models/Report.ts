@@ -9,7 +9,7 @@ const ReportSchema = new mongoose.Schema({
     },
     count: {
         type: Number,
-        default: 1,
+        default: 0,
         required: true
     }
 
