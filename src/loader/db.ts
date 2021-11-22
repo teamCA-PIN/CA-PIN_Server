@@ -7,6 +7,7 @@ import Cafe from "../models/Cafe";
 import Review from "../models/Review";
 import Tag from "../models/Tag";
 import Menu from "../models/Menu";
+import Report from "../models/Report";
 
 const connectDB = async () => {
   try {
@@ -43,7 +44,10 @@ const connectDB = async () => {
     });
     Menu.createCollection().then(function(collection){
       console.log("Menu Collection is created!");
-    })
+    });
+    Report.createCollection().then(function(collection){
+      console.log("Report Collections is created!");
+    });
 
   } catch (err) {
     console.error(err.message);

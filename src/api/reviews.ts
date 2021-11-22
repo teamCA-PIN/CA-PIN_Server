@@ -149,4 +149,25 @@ async(req: Request, res: Response, next) => {
     }
 })
 
+router.post("/report/:reviewId",auth,
+async(req: Request, res: Response, next) => {
+    const reviewId = req.params.reviewId
+    const userId = res.locals.userId
+    if (!reviewId) next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE));
+    try {
+        const review = await reviewService.getReviewById(reviewId);
+        if (!review) {
+            return res.status(statusCode.NO_CONTENT).send();
+        }
+        if (userId == review.user.id) {
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.REPORT_REVIEW_FAIL))
+        }
+        const report = await reviewService.reportReview(review);
+        res.status(statusCode.OK).send();
+        return reviewService.mailToAdmin(review, report);
+    } catch (error) {
+        next(error);
+    }
+})
+
 module.exports = router;

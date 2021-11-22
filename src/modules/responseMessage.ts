@@ -57,6 +57,7 @@ module.exports = {
     READ_MY_REVIEW_SUCCESS: "내 리뷰 목록 조회 성공",
     READ_MY_REVIEW_FAIL: "내 리뷰 목록 조회 실패",
     REVIEW_REQUEST_FAIL: "리뷰 요청에 필요한 값이 잘못되었습니다.",
+    REPORT_REVIEW_FAIL: "리뷰 신고 실패",
 
     // CAFE
     CAFE_LOCATION_SUCCESS: "카페 위치 목록 조회 성공",

@@ -139,5 +139,26 @@ router.delete("/:reviewId", auth_1.default, (req, res, next) => __awaiter(void 0
         next(error);
     }
 }));
+router.post("/report/:reviewId", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewId = req.params.reviewId;
+    const userId = res.locals.userId;
+    if (!reviewId)
+        next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    try {
+        const review = yield reviewService.getReviewById(reviewId);
+        if (!review) {
+            return res.status(statusCode.NO_CONTENT).send();
+        }
+        if (userId == review.user.id) {
+            return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REPORT_REVIEW_FAIL));
+        }
+        const report = yield reviewService.reportReview(review);
+        res.status(statusCode.OK).send();
+        return reviewService.mailToAdmin(review, report);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 module.exports = router;
 //# sourceMappingURL=reviews.js.map
