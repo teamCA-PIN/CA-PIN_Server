@@ -209,7 +209,6 @@ const mailToAdmin = async (review, report) => {
             pass: process.env.NODEMAILER_PASS
         },
     });
-    console.log(review.created_at);
     await transporter.sendMail({
         from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
         to: process.env.NODEMAILER_ADMIN,

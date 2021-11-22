@@ -198,7 +198,6 @@ const mailToAdmin = (review, report) => __awaiter(void 0, void 0, void 0, functi
             pass: process.env.NODEMAILER_PASS
         },
     });
-    console.log(review.created_at);
     yield transporter.sendMail({
         from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
         to: process.env.NODEMAILER_ADMIN,
