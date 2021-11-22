@@ -174,11 +174,15 @@ const createReport = (reviewId) => __awaiter(void 0, void 0, void 0, function* (
     yield report.save();
     return report;
 });
-const reportReview = (review) => __awaiter(void 0, void 0, void 0, function* () {
+const reportReview = (userId, review) => __awaiter(void 0, void 0, void 0, function* () {
     var report = yield Report_1.default.findOne({ review: review.id });
     if (!report) {
-        report = yield createReport(review);
+        report = yield createReport(review.id);
     }
+    if (report.reporters.includes(userId)) {
+        throw http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REPORT_REVIEW_FAIL);
+    }
+    report.reporters.push(userId);
     report.count += 1;
     yield report.save();
     return report;

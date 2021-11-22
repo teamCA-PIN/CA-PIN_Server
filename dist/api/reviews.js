@@ -152,7 +152,7 @@ router.post("/report/:reviewId", auth_1.default, (req, res, next) => __awaiter(v
         if (userId == review.user.id) {
             return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REPORT_REVIEW_FAIL));
         }
-        const report = yield reviewService.reportReview(review);
+        const report = yield reviewService.reportReview(userId, review);
         res.status(statusCode.OK).send();
         return reviewService.mailToAdmin(review, report);
     }

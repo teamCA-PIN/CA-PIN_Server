@@ -184,11 +184,15 @@ const createReport = async (reviewId) => {
     await report.save();
     return report;
 }
-const reportReview = async (review) => {
+const reportReview = async (userId, review) => {
     var report = await Report.findOne({review: review.id});
     if (!report) {
-        report = await createReport(review);
+        report = await createReport(review.id);
     }
+    if (report.reporters.includes(userId)) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.REPORT_REVIEW_FAIL)
+    }
+    report.reporters.push(userId);
     report.count += 1;
     await report.save();
     return report;

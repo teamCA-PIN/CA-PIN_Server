@@ -162,7 +162,7 @@ async(req: Request, res: Response, next) => {
         if (userId == review.user.id) {
             return next(createError(statusCode.BAD_REQUEST, responseMessage.REPORT_REVIEW_FAIL))
         }
-        const report = await reviewService.reportReview(review);
+        const report = await reviewService.reportReview(userId,review);
         res.status(statusCode.OK).send();
         return reviewService.mailToAdmin(review, report);
     } catch (error) {
