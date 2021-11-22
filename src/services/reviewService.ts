@@ -176,11 +176,10 @@ const getMyReviews = async (userId) => {
     return myReviewsDTO
 }
 
-const createReport = async (userId, reviewId) => {
+const createReport = async (reviewId) => {
    
     const report = new Report({
-        review: reviewId,
-        reporters: [userId]
+        review: reviewId
     });
     await report.save();
     return report;
@@ -188,7 +187,10 @@ const createReport = async (userId, reviewId) => {
 const reportReview = async (userId, review) => {
     var report = await Report.findOne({review: review.id});
     if (!report) {
-        report = await createReport(userId, review);
+        report = await createReport(review.id);
+    }
+    if (report.reporters.includes(userId)) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.REPORT_REVIEW_FAIL)
     }
     report.reporters.push(userId);
     report.count += 1;
