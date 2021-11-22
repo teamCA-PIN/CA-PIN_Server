@@ -14,6 +14,12 @@ const ReportSchema = new mongoose_1.default.Schema({
         type: Number,
         default: 0,
         required: true
+    },
+    reporters: {
+        type: [mongoose_1.default.SchemaTypes.ObjectId],
+        default: [],
+        ref: "User",
+        required: true
     }
 }, {
     collection: "reports",
