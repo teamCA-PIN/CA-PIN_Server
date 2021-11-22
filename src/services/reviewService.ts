@@ -176,19 +176,21 @@ const getMyReviews = async (userId) => {
     return myReviewsDTO
 }
 
-const createReport = async (reviewId) => {
+const createReport = async (userId, reviewId) => {
    
     const report = new Report({
-        review: reviewId
+        review: reviewId,
+        reporters: [userId]
     });
     await report.save();
     return report;
 }
-const reportReview = async (review) => {
+const reportReview = async (userId, review) => {
     var report = await Report.findOne({review: review.id});
     if (!report) {
-        report = await createReport(review);
+        report = await createReport(userId, review);
     }
+    report.reporters.push(userId);
     report.count += 1;
     await report.save();
     return report;
@@ -205,6 +207,7 @@ const mailToAdmin = async (review, report) => {
             pass: process.env.NODEMAILER_PASS
         },
     });
+    console.log(review.created_at);
     await transporter.sendMail({
         from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
         to: process.env.NODEMAILER_ADMIN,
