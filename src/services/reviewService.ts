@@ -1,14 +1,14 @@
 import Review from "../models/Review";
 import Report from "../models/Report";
 import { IReviewOutputDTO, IWriterDTO, IReviewMyOutputDTO } from "../interfaces/IReview";
-import IReport from "../interfaces/IReport";
 import mongoose from "mongoose";
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 import createError from "http-errors";
 const koreanDate = require("../modules/dateCalculate");
 import Cafe from "../models/Cafe";
-import { report } from "process";
+const nodemailer = require('nodemailer');
+
 const getCafeReviewList = async(cafeId) => {
 
     const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]).sort({created_at:-1});
@@ -176,37 +176,54 @@ const getMyReviews = async (userId) => {
     return myReviewsDTO
 }
 
-const createReport: IReport = async (reviewId) => {
-    try {
-        const report = new Report({
-            review: reviewId
-        });
-        await report.save();
-        return report;
-    } catch (error) {
-        console.log(error.message);
-        throw createError(error);
-    }
+const createReport = async (reviewId) => {
+   
+    const report = new Report({
+        review: reviewId
+    });
+    await report.save();
+    return report;
 }
-const reportReview = async (reviewId) => {
-    try {
-        const review = await Review.findById(reviewId);
-        if (!review) return null;
-        var report = await Report.findOne({review: reviewId});
-        if (!report) {
-            report = await createReport(review);
-        }
-        report.populate("review");
-        report.count += 1;
-        await report.save();
-        return report;
-    } catch (error) {
-        console.log(error.message);
-        throw createError(error);
+const reportReview = async (review) => {
+    var report = await Report.findOne({review: review.id});
+    if (!report) {
+        report = await createReport(review);
     }
-    
+    report.count += 1;
+    await report.save();
+    return report;
 }
 
+const mailToAdmin = async (review, report) => {
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.NODEMAILER_ADMIN,
+            pass: process.env.NODEMAILER_PASS
+        },
+    });
+    await transporter.sendMail({
+        from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
+        to: process.env.NODEMAILER_ADMIN,
+        subject: '[CA:PIN] 리뷰 신고가 접수되었습니다.',
+        text: "리뷰 신고가 접수되었습니다.",   
+        html: `
+        <pre>카페명 : ${review.cafe.name}
+작성자 : ${review.user.nickname}, ${review.user.email}
+작성일자 : ${review.created_at}
+리뷰 내용 : ${review.content}
+누적 신고 횟수 : ${report.count}</pre>`
+    });
+    return 
+}
+const getReviewById = async (reviewId) => {
+    const review = await Review.findById(reviewId).populate("cafe user");
+    if (!review) return null;
+    return review
+}
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
@@ -215,5 +232,7 @@ module.exports = {
     deleteReview,
     updateCafeAverageRating,
     getMyReviews,
-    reportReview
+    reportReview,
+    mailToAdmin,
+    getReviewById
 }

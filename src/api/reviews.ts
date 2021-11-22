@@ -149,4 +149,21 @@ async(req: Request, res: Response, next) => {
     }
 })
 
+router.post("/report/:reviewId",
+async(req: Request, res: Response, next) => {
+    const reviewId = req.params.reviewId
+    if (!reviewId) next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE));
+    try {
+        const review = await reviewService.getReviewById(reviewId);
+        if (!review) {
+            return res.status(statusCode.NO_CONTENT).send();
+        }
+        const report = await reviewService.reportReview(review);
+        res.status(statusCode.OK).send();
+        return reviewService.mailToAdmin(review, report);
+    } catch (error) {
+        next(error);
+    }
+})
+
 module.exports = router;
