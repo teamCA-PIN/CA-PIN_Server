@@ -9,9 +9,19 @@ const db_1 = __importDefault(require("./loader/db"));
 const config_1 = __importDefault(require("./config"));
 const { logger } = require("./modules/logger");
 const morgan_1 = __importDefault(require("morgan"));
+const cors = require('cors');
+const whitelist = ['http://127.0.0.1:80', 'http://127.0.0.1:81', 'http://127.0.0.1:6000'];
+var corsOptions = {
+    origin: function (origin, callback) {
+        var isWhitelisted = whitelist.indexOf(origin) !== -1;
+        callback(null, isWhitelisted);
+    },
+    credentials: true
+};
 // Connect Database
 db_1.default();
 app.use(express_1.default.json()); // [3]
+app.use(cors(corsOptions));
 // Define Routes
 app.use(morgan_1.default("dev", { "stream": logger.stream.write }));
 app.use("/cafes", require("./api/cafes")); // [4]
