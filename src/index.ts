@@ -6,10 +6,10 @@ const {logger} = require("./modules/logger");
 import morgan from "morgan";
 const cors = require('cors');
 
-const whitelist = ['http://127.0.0.1:80','http://127.0.0.1:81', 'http://127.0.0.1:6000'];
+const whitelist = ['http://3.37.75.200','http://127.0.0.1'];
 
 var corsOptions = {
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     var isWhitelisted = whitelist.indexOf(origin) !== -1;
     callback(null, isWhitelisted);
   },
@@ -18,8 +18,8 @@ var corsOptions = {
 // Connect Database
 connectDB();
 
-app.use(express.json()); // [3]
 app.use(cors(corsOptions));
+app.use(express.json()); // [3]
 // Define Routes
 app.use(morgan("dev",{"stream":logger.stream.write}));
 app.use("/cafes", require("./api/cafes")); // [4]

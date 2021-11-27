@@ -10,7 +10,7 @@ const config_1 = __importDefault(require("./config"));
 const { logger } = require("./modules/logger");
 const morgan_1 = __importDefault(require("morgan"));
 const cors = require('cors');
-const whitelist = ['http://127.0.0.1:80', 'http://127.0.0.1:81', 'http://127.0.0.1:6000'];
+const whitelist = ['http://3.37.75.200', 'http://127.0.0.1'];
 var corsOptions = {
     origin: function (origin, callback) {
         var isWhitelisted = whitelist.indexOf(origin) !== -1;
@@ -20,8 +20,14 @@ var corsOptions = {
 };
 // Connect Database
 db_1.default();
-app.use(express_1.default.json()); // [3]
+//app.use(function(req, res, next) {
+//res.header('Access-Control-Allow-Origin', 'http://3.37.75.200');
+// res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+//res.header('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,DELETE,PUT');
+//next();
+//});
 app.use(cors(corsOptions));
+app.use(express_1.default.json()); // [3]
 // Define Routes
 app.use(morgan_1.default("dev", { "stream": logger.stream.write }));
 app.use("/cafes", require("./api/cafes")); // [4]
