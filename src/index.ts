@@ -4,12 +4,22 @@ import connectDB from "./loader/db";
 import config from "./config";
 const {logger} = require("./modules/logger");
 import morgan from "morgan";
+const cors = require('cors');
 
+const whitelist = ['http://127.0.0.1:80','http://127.0.0.1:81', 'http://127.0.0.1:6000'];
+
+var corsOptions = {
+  origin: function(origin, callback) {
+    var isWhitelisted = whitelist.indexOf(origin) !== -1;
+    callback(null, isWhitelisted);
+  },
+  credentials: true
+}
 // Connect Database
 connectDB();
 
 app.use(express.json()); // [3]
-
+app.use(cors(corsOptions));
 // Define Routes
 app.use(morgan("dev",{"stream":logger.stream.write}));
 app.use("/cafes", require("./api/cafes")); // [4]
