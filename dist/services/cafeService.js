@@ -145,7 +145,8 @@ const getCafeByName = (query) => __awaiter(void 0, void 0, void 0, function* () 
             name: cafe.name,
             address: cafe.address,
             latitude: cafe.latitude,
-            longitude: cafe.longitude
+            longitude: cafe.longitude,
+            img: cafe.img
         };
         cafeSearchDTOs.push(cafeSearchDTO);
     }

@@ -20,12 +20,6 @@ var corsOptions = {
 };
 // Connect Database
 db_1.default();
-//app.use(function(req, res, next) {
-//res.header('Access-Control-Allow-Origin', 'http://3.37.75.200');
-// res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-//res.header('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,DELETE,PUT');
-//next();
-//});
 app.use(cors(corsOptions));
 app.use(express_1.default.json()); // [3]
 // Define Routes
