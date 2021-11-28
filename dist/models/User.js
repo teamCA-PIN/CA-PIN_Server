@@ -50,7 +50,6 @@ const UserSchema = new mongoose_1.default.Schema({
     },
     token_refresh: {
         type: String,
-        required: true,
     },
     is_admin: {
         type: Boolean

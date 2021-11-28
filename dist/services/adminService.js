@@ -20,7 +20,7 @@ const nd = require("../modules/dateCalculate");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 const loginAdmin = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
-    let user = yield User_1.default.findOne({ admin_email: email });
+    let user = yield User_1.default.findOne({ email });
     // 없는 유저
     if (!user) {
         throw createError(statusCode.NOT_FOUND, responseMessage.NO_EMAIL);

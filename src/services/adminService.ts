@@ -7,7 +7,7 @@ const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 
 const loginAdmin = async(email, password) => {
-    let user = await User.findOne({ admin_email: email });
+    let user = await User.findOne({ email });
 
     // 없는 유저
     if (!user) {
@@ -19,7 +19,7 @@ const loginAdmin = async(email, password) => {
     if (!isMatch) {
         throw createError(statusCode.BAD_REQUEST,responseMessage.MISS_MATCH_PW);
     }
-    if (user.is_admin === undefined) {
+    if (user.is_admin === undefined || user.is_admin == false) {
         throw createError(statusCode.UNAUTHORIZED, responseMessage.UNAUTHORIZED);
     }
 
