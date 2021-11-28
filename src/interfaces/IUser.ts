@@ -8,6 +8,7 @@ export interface IUser {
     created_at?: Date;
     deleted_at?: Date;
     token_refresh: string;
+    is_admin?: boolean;
 }
 
 export interface IUserOutputDTO {

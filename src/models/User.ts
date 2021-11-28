@@ -48,6 +48,9 @@ const UserSchema = new mongoose.Schema ({
     token_refresh: {
         type: String,
         required: true,
+    },
+    is_admin: {
+        type: Boolean
     }
 },
 {

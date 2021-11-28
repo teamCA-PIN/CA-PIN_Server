@@ -14,9 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_errors_1 = __importDefault(require("http-errors"));
 const express_1 = __importDefault(require("express"));
+const express_validator_1 = require("express-validator");
 const router = express_1.default.Router();
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const adminService = require("../services/adminService");
+const authService = require("../services/authService");
 const cafeService = require("../services/cafeService");
 const { upload } = require("../middleware/upload");
 const config_1 = __importDefault(require("../config"));
@@ -78,6 +81,55 @@ router.put("/geocoder", (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         if (error.response.status)
             return next(http_errors_1.default(error.response.status, error.message));
         return next(http_errors_1.default(error));
+    }
+}));
+router.post("/login", [
+    express_validator_1.check("email", "Please include a valid email").not().isEmpty(),
+    express_validator_1.check("password", "password is required").not().isEmpty(),
+], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = express_validator_1.validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    const { email, password } = req.body;
+    try {
+        const user = yield adminService.loginAdmin(email, password);
+        const userToken = yield authService.generateToken(user._id);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.SIGN_IN_SUCCESS,
+            loginData: {
+                nickname: user.nickname,
+                token_access: userToken,
+                token_refresh: user.token_refresh
+            },
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route Post user/signup
+ *  @desc generate user(회원가입)
+ *  @access Public
+ */
+router.post("/signup", [
+    express_validator_1.check('email', 'email is required').isEmail(),
+    express_validator_1.check("password", "password is required").not().isEmpty(),
+], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = express_validator_1.validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    const { email, password } = req.body;
+    try {
+        yield adminService.signupAdmin(email, password);
+        return res.status(statusCode.CREATED).json({
+            message: responseMessage.SIGN_UP_SUCCESS
+        });
+    }
+    catch (error) {
+        return next(error);
     }
 }));
 module.exports = router;

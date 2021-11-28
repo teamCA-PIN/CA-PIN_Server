@@ -1,5 +1,5 @@
 export interface IAdminUser {
-    email: string;
+    admin_email: string;
     password: string; 
     created_at?: Date;
     deleted_at?: Date;
