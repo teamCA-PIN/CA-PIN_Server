@@ -8,6 +8,7 @@ import Review from "../models/Review";
 import Tag from "../models/Tag";
 import Menu from "../models/Menu";
 import Report from "../models/Report";
+import AdminUser from "../models/AdminUser";
 
 const connectDB = async () => {
   try {
@@ -48,6 +49,10 @@ const connectDB = async () => {
     Report.createCollection().then(function(collection){
       console.log("Report Collections is created!");
     });
+    AdminUser.createCollection().then(function(collection){
+      console.log("AdminUser Collections is created!");
+    })
+
 
   } catch (err) {
     console.error(err.message);
