@@ -37,6 +37,7 @@ export interface ICafeSearchDTO{
     address: string;
     latitude?: number;
     longitude?: number;
+    img?: string;
 }
 
 export interface ICafeAllDTO{

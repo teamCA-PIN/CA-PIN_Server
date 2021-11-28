@@ -143,7 +143,8 @@ const getCafeByName = async(query) => {
             name: cafe.name,
             address: cafe.address,
             latitude: cafe.latitude,
-            longitude: cafe.longitude
+            longitude: cafe.longitude,
+            img: cafe.img
         }
         cafeSearchDTOs.push(cafeSearchDTO)
     }
