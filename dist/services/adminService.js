@@ -30,7 +30,7 @@ const loginAdmin = (email, password) => __awaiter(void 0, void 0, void 0, functi
     if (!isMatch) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.MISS_MATCH_PW);
     }
-    if (user.is_admin === undefined) {
+    if (user.is_admin === undefined || user.is_admin == false) {
         throw createError(statusCode.UNAUTHORIZED, responseMessage.UNAUTHORIZED);
     }
     user = yield authService.generateRefreshToken(user._id);

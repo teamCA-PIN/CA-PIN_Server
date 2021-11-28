@@ -47,7 +47,7 @@ app // [5]
     .listen(config_1.default.port, () => {
     console.log(`
     ################################################
-    🛡️  Server listening on port: 6000 🛡️
+          🎄  Server listening on port: ${config_1.default.port} 🎄
     ################################################
   `);
 })

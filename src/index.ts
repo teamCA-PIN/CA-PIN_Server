@@ -49,7 +49,7 @@ app // [5]
   .listen(config.port, () => {
     console.log(`
     ################################################
-    🛡️  Server listening on port: 6000 🛡️
+          🎄  Server listening on port: ${config.port} 🎄
     ################################################
   `);
   })
