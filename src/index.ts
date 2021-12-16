@@ -5,6 +5,7 @@ import config from "./config";
 const {logger} = require("./modules/logger");
 import morgan from "morgan";
 const cors = require('cors');
+const koreanDate = require('./modules/dateCalculate');
 
 const whitelist = ['http://3.37.75.200','http://127.0.0.1'];
 
@@ -15,13 +16,17 @@ var corsOptions = {
   },
   credentials: true
 }
+const morganOptions = "[:koreanDate] :method :url :status :response-time mx - :res[content-length] :remote-addr";
+morgan.token('koreanDate',function (req,res) {
+  return koreanDate.getDate();
+});
 // Connect Database
 connectDB();
 
 app.use(cors(corsOptions));
 app.use(express.json()); // [3]
 // Define Routes
-app.use(morgan("dev",{"stream":logger.stream.write}));
+app.use(morgan(morganOptions,{"stream":logger.stream.write}));
 app.use("/cafes", require("./api/cafes")); // [4]
 app.use("/user", require("./api/user"));
 app.use("/reviews", require("./api/reviews"));
