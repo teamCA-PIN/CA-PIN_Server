@@ -15,7 +15,7 @@ var corsOptions = {
   },
   credentials: true
 }
-const morganOptions = "[:koreanDate] :method :url :status :response-time mx - :res[content-length] :remote-addr";
+const morganOptions = "[:method] :url :status :response-time mx - :res[content-length] [:koreanDate] :remote-addr";
 morgan.token('koreanDate',function (req,res) {
   return Date();
 });
