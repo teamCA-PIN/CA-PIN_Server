@@ -5,7 +5,6 @@ import config from "./config";
 const {logger} = require("./modules/logger");
 import morgan from "morgan";
 const cors = require('cors');
-const koreanDate = require('./modules/dateCalculate');
 
 const whitelist = ['http://3.37.75.200','http://127.0.0.1'];
 
@@ -18,7 +17,7 @@ var corsOptions = {
 }
 const morganOptions = "[:koreanDate] :method :url :status :response-time mx - :res[content-length] :remote-addr";
 morgan.token('koreanDate',function (req,res) {
-  return koreanDate.getDate();
+  return Date();
 });
 // Connect Database
 connectDB();
