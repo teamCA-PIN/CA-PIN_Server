@@ -10,7 +10,6 @@ const config_1 = __importDefault(require("./config"));
 const { logger } = require("./modules/logger");
 const morgan_1 = __importDefault(require("morgan"));
 const cors = require('cors');
-const koreanDate = require('./modules/dateCalculate');
 const whitelist = ['http://3.37.75.200', 'http://127.0.0.1'];
 var corsOptions = {
     origin: function (origin, callback) {
