@@ -81,9 +81,6 @@ const modifyReview = (reviewId, userId, content, rating, isAllDeleted, recommend
         const review = yield Review_1.default.findById(reviewId);
         if (!review)
             return null;
-        // if (review.user != userId){
-        //     throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
-        // }
         review.content = content;
         review.rating = rating;
         review.recommend = recommend;
@@ -110,12 +107,10 @@ const deleteReview = (reviewId, userId) => __awaiter(void 0, void 0, void 0, fun
         if (review.user != userId) {
             throw http_errors_1.default(statusCode.UNAUTHORIZED, responseMessage.UNAUTHORIZED);
         }
-        const deletedReview = yield Review_1.default.remove({ _id: reviewId }, function (err) {
-            if (err) {
-                throw err;
-            }
+        const deletedReview = yield Review_1.default.deleteOne({
+            _id: reviewId
         });
-        return deletedReview;
+        return review;
     }
     catch (error) {
         throw (error);
@@ -135,17 +130,27 @@ const updateCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, fu
             }
         }
     ]);
-    var cafeRating = undefined;
+    var cafeRating = 0;
     if (reviews.length != 0) {
         cafeRating = reviews[0].average;
         cafeRating = Number(cafeRating.toFixed(1));
+        yield Cafe_1.default.updateOne({
+            _id: cafeId
+        }, {
+            $set: {
+                rating: cafeRating
+            }
+        });
     }
-    yield Cafe_1.default.findByIdAndUpdate(cafeId, {
-        rating: cafeRating
-    }, {
-        new: true,
-        useFindAndModify: false
-    });
+    else {
+        yield Cafe_1.default.updateOne({
+            _id: cafeId
+        }, {
+            $unset: {
+                rating: cafeRating
+            }
+        });
+    }
 });
 const getMyReviews = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const myReviews = yield Review_1.default.find({ user: userId }).populate("cafe").sort({ created_at: -1 });

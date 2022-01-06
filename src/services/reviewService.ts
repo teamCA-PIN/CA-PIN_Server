@@ -76,9 +76,6 @@ const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommen
     try {
         const review = await Review.findById(reviewId);
         if (!review) return null;
-        // if (review.user != userId){
-        //     throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
-        // }
         review.content = content;
         review.rating = rating;
         review.recommend = recommend;
@@ -108,12 +105,12 @@ const deleteReview = async (reviewId,userId) => {
         if (review.user != userId){
             throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
         }
-        const deletedReview = await Review.remove({_id: reviewId}, function(err) {
-            if (err) {
-                throw err;
+        const deletedReview = await Review.deleteOne(
+            {
+                _id: reviewId
             }
-        });
-        return deletedReview;
+        );
+        return review;
     } catch (error) {
         throw(error);
     }
@@ -140,18 +137,35 @@ const updateCafeAverageRating = async(cafeId) => {
         
     ]);
 
-    var cafeRating = undefined;
+    var cafeRating = 0;
     if (reviews.length != 0){
         cafeRating = reviews[0].average;
         cafeRating = Number(cafeRating.toFixed(1));
+        await Cafe.updateOne(
+            {
+            _id: cafeId
+            },
+            {
+                $set: {
+                    rating: cafeRating
+                }
+            }
+        )
+    } else {
+        await Cafe.updateOne(
+            {
+            _id: cafeId
+            },
+            {
+                $unset: {
+                    rating: cafeRating
+                }
+            }
+        )
     }
+
     
-    await Cafe.findByIdAndUpdate(cafeId,{
-        rating:cafeRating
-    },{ 
-        new: true,
-        useFindAndModify: false
-    })
+
 }
 
 const getMyReviews = async (userId) => {
