@@ -135,11 +135,16 @@ const fetchMyCategory = async(userId, cafeId) => {
         return categoryList
     } else {
         //cafeId가 파라미터로 들어왔을때는 cafeId가 속한 카테고리에 isPin 속성을 true로 하여 반환
-        const category = await Category.findOne().where('cafes').all([cafeId])
         let savedCategoryList: IMyCategoryListDTO[] = []
         for (let item of categoryList) {
             let content: IMyCategoryListDTO;
-            if (item._id.toString() == category._id.toString()) {
+            let isPin = false
+            for (let cafe of item.cafes) {
+                if (cafe.toString() == cafeId.toString()) {
+                    isPin = true
+                } 
+            }
+            if (isPin) {
                 content = {
                     cafes: item.cafes,
                     _id: item._id,

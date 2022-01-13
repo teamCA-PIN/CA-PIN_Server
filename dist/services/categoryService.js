@@ -122,11 +122,16 @@ const fetchMyCategory = (userId, cafeId) => __awaiter(void 0, void 0, void 0, fu
     }
     else {
         //cafeId가 파라미터로 들어왔을때는 cafeId가 속한 카테고리에 isPin 속성을 true로 하여 반환
-        const category = yield Category_1.default.findOne().where('cafes').all([cafeId]);
         let savedCategoryList = [];
         for (let item of categoryList) {
             let content;
-            if (item._id.toString() == category._id.toString()) {
+            let isPin = false;
+            for (let cafe of item.cafes) {
+                if (cafe.toString() == cafeId.toString()) {
+                    isPin = true;
+                }
+            }
+            if (isPin) {
                 content = {
                     cafes: item.cafes,
                     _id: item._id,
