@@ -7,6 +7,7 @@ const responseMessage = require("../modules/responseMessage");
 const adminService = require("../services/adminService");
 const authService = require("../services/authService");
 const cafeService = require("../services/cafeService");
+const reviewService = require("../services/reviewService");
 const {upload} = require("../middleware/upload");
 import config from "../config";
 const geocoderService = require("../services/geocoderService");
@@ -136,4 +137,20 @@ router.post(
     }
 );
 
+router.post(
+    "/reset/review",
+    async(req: Request, res: Response, next) => {
+        try {
+            const cafes = await cafeService.getCafeLocationList([]);
+            for (let cafe of cafes) {
+                reviewService.updateCafeAverageRating(cafe._id.toString());
+            }
+            return res.status(statusCode.OK).json();
+        } catch (error) {
+            return next(error);
+        }
+
+    }
+
+);
 module.exports = router;
