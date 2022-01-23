@@ -205,7 +205,7 @@ const mailToAdmin = (review, report) => __awaiter(void 0, void 0, void 0, functi
     });
     yield transporter.sendMail({
         from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
-        to: process.env.NODEMAILER_ADMIN,
+        to: process.env.REPORT_REVIEW_ACCOUNT,
         subject: '[CA:PIN] 리뷰 신고가 접수되었습니다.',
         text: "리뷰 신고가 접수되었습니다.",
         html: `
