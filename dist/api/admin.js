@@ -21,6 +21,7 @@ const responseMessage = require("../modules/responseMessage");
 const adminService = require("../services/adminService");
 const authService = require("../services/authService");
 const cafeService = require("../services/cafeService");
+const reviewService = require("../services/reviewService");
 const { upload } = require("../middleware/upload");
 const config_1 = __importDefault(require("../config"));
 const geocoderService = require("../services/geocoderService");
@@ -127,6 +128,18 @@ router.post("/signup", [
         return res.status(statusCode.CREATED).json({
             message: responseMessage.SIGN_UP_SUCCESS
         });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+router.post("/reset/review", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const cafes = yield cafeService.getCafeLocationList([]);
+        for (let cafe of cafes) {
+            reviewService.updateCafeAverageRating(cafe._id.toString());
+        }
+        return res.status(statusCode.OK).json();
     }
     catch (error) {
         return next(error);
