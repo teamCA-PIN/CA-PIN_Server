@@ -109,31 +109,11 @@ router.post("/login", [
         return next(error);
     }
 }));
-/**
- *  @route Post user/signup
- *  @desc generate user(회원가입)
- *  @access Public
- */
-router.post("/signup", [
-    express_validator_1.check('email', 'email is required').isEmail(),
-    express_validator_1.check("password", "password is required").not().isEmpty(),
-], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = express_validator_1.validationResult(req);
-    if (!errors.isEmpty()) {
-        return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
-    }
-    const { email, password } = req.body;
-    try {
-        yield adminService.signupAdmin(email, password);
-        return res.status(statusCode.CREATED).json({
-            message: responseMessage.SIGN_UP_SUCCESS
-        });
-    }
-    catch (error) {
-        return next(error);
-    }
-}));
 router.post("/reset/review", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const adminKey = config_1.default.adminSecretKey;
+    if (req.header("adminKey") != adminKey) {
+        return next(http_errors_1.default(http_errors_1.default(statusCode.UNAUTHORIZED, responseMessage.UNAUTHORIZED)));
+    }
     try {
         const cafes = yield cafeService.getCafeLocationList([]);
         for (let cafe of cafes) {

@@ -105,41 +105,14 @@ router.post(
     }
 );
 
-/**
- *  @route Post user/signup
- *  @desc generate user(회원가입)
- *  @access Public
- */
-router.post(
-    "/signup",
-    [
-        check('email', 'email is required').isEmail(),
-        check("password", "password is required").not().isEmpty(),
-    ],
-    async(req: Request, res: Response, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()){
-            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
-        }
-
-        const {email, password} = req.body;
-
-        try {
-            await adminService.signupAdmin(email, password);
-
-            return res.status(statusCode.CREATED).json({
-                message: responseMessage.SIGN_UP_SUCCESS
-            });
-
-        } catch (error) {
-            return next(error);
-        }
-    }
-);
 
 router.post(
     "/reset/review",
     async(req: Request, res: Response, next) => {
+        const adminKey = config.adminSecretKey
+        if (req.header("adminKey") != adminKey){
+            return next(createError(createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED)));
+        }
         try {
             const cafes = await cafeService.getCafeLocationList([]);
             for (let cafe of cafes) {
