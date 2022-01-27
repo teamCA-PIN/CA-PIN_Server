@@ -51,8 +51,6 @@ router.get("/", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, vo
     }
 }));
 router.post("/", auth_1.default, upload.array("imgs", 5), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
-    console.log(req);
     if (!req.body || !req.body.review)
         return (next(http_errors_1.default(401, responseMessage.NULL_VALUE)));
     const reviewParams = JSON.parse(req.body.review);

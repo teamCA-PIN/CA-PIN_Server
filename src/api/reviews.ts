@@ -47,8 +47,6 @@ router.get(
 router.post(
     "/",auth,upload.array("imgs",5),
     async(req: Request, res: Response, next) => {
-        console.log(req.body);
-        console.log(req);
         if(!req.body || !req.body.review) return (next(createError(401,responseMessage.NULL_VALUE)));
         const reviewParams = JSON.parse(req.body.review);
         const cafeId = req.query.cafe;
