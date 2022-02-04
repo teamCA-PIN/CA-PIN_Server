@@ -238,5 +238,22 @@ router.post("/refresh", (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         return next(error);
     }
 }));
+/**
+ *  @route Delete user/:token
+ *  @desc withdrawal
+ *  @access Private
+ */
+router.delete("/", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = res.locals.userId;
+    try {
+        const isSuccess = yield userService.withDrawalUser(userId);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.DELETE_USER_SUCCESS,
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
 module.exports = router;
 //# sourceMappingURL=user.js.map

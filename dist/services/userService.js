@@ -158,12 +158,28 @@ const updateUserInfo = (userId, new_Img, new_nickname) => __awaiter(void 0, void
         useFindAndModify: false
     });
 });
+const withDrawalUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield User_1.default.findById(userId);
+        if (!user) {
+            throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
+        }
+        yield User_1.default.deleteOne({ _id: userId });
+        yield Review_1.default.deleteMany({ user: userId });
+        yield Category_1.default.deleteMany({ user: userId });
+        return true;
+    }
+    catch (error) {
+        throw (error);
+    }
+});
 module.exports = {
     loginUser,
     signupUser,
     fetchUserInfo,
     updateUserInfo,
     mailToUser,
-    updatePassword
+    updatePassword,
+    withDrawalUser
 };
 //# sourceMappingURL=userService.js.map
