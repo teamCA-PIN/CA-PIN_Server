@@ -286,4 +286,25 @@ router.get(
     }
 );
 
+/**
+ *  @route Delete user/:token
+ *  @desc withdrawal
+ *  @access Private
+ */
+ router.delete(
+    "/",
+    authChecker,
+    async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId
+        try {
+            const isSuccess = await userService.withDrawalUser(userId);
+            return res.status(statusCode.OK).json({
+                message: responseMessage.DELETE_USER_SUCCESS,
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
+
 module.exports = router;

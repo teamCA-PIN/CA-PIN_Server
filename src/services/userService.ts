@@ -178,11 +178,27 @@ const updateUserInfo = async(userId, new_Img, new_nickname) => {
     );
 }
 
+const withDrawalUser = async(userId) => {
+    try{
+        const user = await User.findById(userId);
+        if (!user) {
+            throw createError(statusCode.NOT_FOUND,responseMessage.READ_USER_FAIL);
+        }
+        await User.deleteOne({_id: userId});
+        await Review.deleteMany({user: userId});
+        await Category.deleteMany({user: userId});
+        return true;
+    } catch (error) {
+        throw(error);
+    }
+}
+
 module.exports = {
     loginUser,
     signupUser,
     fetchUserInfo,
     updateUserInfo,
     mailToUser,
-    updatePassword
+    updatePassword,
+    withDrawalUser
 }
